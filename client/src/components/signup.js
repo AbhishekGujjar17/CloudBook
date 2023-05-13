@@ -23,7 +23,7 @@ const Signup = (props) => {
     const { name, email, password } = credentials;
 
     const response = await axios.post(
-      `http://localhost:5000/api/auth/createUser`, { name, email, password }, {
+      `${process.env.REACT_APP_BASE_URL}/api/auth/createUser`, { name, email, password }, {
       headers: {
         "Content-Type": "application/json",
       },
