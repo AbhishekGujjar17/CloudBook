@@ -24,7 +24,7 @@ const AddNote = ({ showAlert }: ShowAlertProps) => {
     try {
       const { title, description, tag } = note;
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/notes/addnote`,
+        `${import.meta.env.VITE_BASE_URL}/notes/addnote`,
         { title, description, tag }
       );
       const newNote = response.data;

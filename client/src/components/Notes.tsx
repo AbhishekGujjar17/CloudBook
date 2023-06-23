@@ -40,7 +40,7 @@ const Notes = ({ showAlert }: ShowAlertProps) => {
   const getNotes = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/notes/fetchallNotes/`
+        `${import.meta.env.VITE_BASE_URL}/notes/fetchallNotes/`
       );
       const notesData = response.data;
       dispatch({
@@ -68,7 +68,7 @@ const Notes = ({ showAlert }: ShowAlertProps) => {
   ) => {
     try {
       await axios.patch(
-        `${process.env.REACT_APP_BASE_URL}/notes/updatenote/${_id}`,
+        `${import.meta.env.VITE_BASE_URL}/notes/updatenote/${_id}`,
         { title, description, tag }
       );
       dispatch({

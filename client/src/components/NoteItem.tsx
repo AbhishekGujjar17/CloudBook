@@ -9,7 +9,7 @@ const NoteItem = ({ note, editNote, showAlert }: NoteItemProps) => {
   const deleteNote = async (id: number) => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_BASE_URL}/notes/deletenote/${id}`
+        `${import.meta.env.VITE_BASE_URL}/notes/deletenote/${id}`
       );
       dispatch({ type: NOTES_REDUCER_ACTION_TYPE.DELETE_NOTE, payload: id });
       showAlert("Deleted Successfully", "success");

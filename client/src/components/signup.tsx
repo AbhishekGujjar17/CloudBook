@@ -34,7 +34,7 @@ const Signup = ({ showAlert }: ShowAlertProps) => {
     const { name, email, password } = credentials;
 
     const response = await axios.post(
-      `${process.env.REACT_APP_BASE_URL}/auth/createUser`,
+      `${import.meta.env.VITE_BASE_URL}/auth/createUser`,
       { name, email, password }
     );
 

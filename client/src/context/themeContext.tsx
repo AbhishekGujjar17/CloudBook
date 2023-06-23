@@ -16,7 +16,6 @@ const ThemeContext = createContext<{
 
 const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, dispatchTheme] = useReducer(themeReducer, initialTheme);
-  console.log("in context:", theme.mode);
 
   return (
     <ThemeContext.Provider value={{ theme, dispatchTheme }}>
