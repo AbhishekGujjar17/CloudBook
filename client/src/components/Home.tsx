@@ -1,9 +1,8 @@
-import React from "react";
+import { ShowAlertProps } from "../types/types";
 import AddNote from "./AddNote";
 import Notes from "./Notes";
 
-export const Home = (props) => {
-  const { showAlert } = props;
+export const Home = ({ showAlert }: ShowAlertProps) => {
   return (
     <div className="container">
       <AddNote showAlert={showAlert} />

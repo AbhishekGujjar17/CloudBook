@@ -1,28 +1,52 @@
 import React from "react";
-import { useContext, useState } from "react";
-import noteContext from "../context/noteContext";
+import { useState } from "react";
+import axios from "axios";
+import { useNote } from "../context/noteContext";
+import { NOTES_REDUCER_ACTION_TYPE } from "../types/enum";
+import { ShowAlertProps } from "../types/types";
+import { useTheme } from "../context/themeContext";
 
-const AddNote = (props) => {
-  const { showAlert } = props;
-  const { addNote } = useContext(noteContext);
-  const [note, setNote] = useState({
+const AddNote = ({ showAlert }: ShowAlertProps) => {
+  const { dispatch } = useNote();
+  const { theme } = useTheme();
+  const color = theme.mode === "white" ? "black" : "white";
+  const [note, setNote] = useState<{
+    title: string;
+    description: string;
+    tag: string;
+  }>({
     title: "",
     description: "",
     tag: "",
   });
 
-  const handleChange = (e) => {
+  const addNote = async () => {
+    try {
+      const { title, description, tag } = note;
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/notes/addnote`,
+        { title, description, tag }
+      );
+      const newNote = response.data;
+      dispatch({ type: NOTES_REDUCER_ACTION_TYPE.ADD_NOTE, payload: newNote });
+      setNote({ title: "", description: "", tag: "" });
+      showAlert("Added Successfully", "success");
+    } catch (error) {
+      showAlert("Failed to Add Note", "danger");
+      console.error(error);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNote({ ...note, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addNote(note.title, note.description, note.tag);
-    setNote({ title: "", description: "", tag: "" });
-    showAlert("Added Successfully", "success");
+    addNote();
   };
   return (
-    <div className="container my-1">
+    <div className={`container my-1 text-${color}`}>
       <h2>Add a Note</h2>
       <hr />
       <form onSubmit={handleSubmit}>

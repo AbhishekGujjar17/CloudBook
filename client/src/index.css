@@ -4,3 +4,18 @@ body {
   font-family: sans-serif;
   box-sizing: border-box;
 }
+@media (max-width: 767px) {
+  .navbar-nav .nav-item {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+.dark {
+  background-color: black;
+  height: 100%;
+}
+
+.light {
+  background-color: white;
+}

@@ -2,10 +2,21 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../context/authContext";
+import { AUTH_REDUCER_ACTION_TYPE } from "../types/enum";
+import { ShowAlertProps } from "../types/types";
+import { useTheme } from "../context/themeContext";
 
-const Signup = (props) => {
-  const { showAlert } = props;
-  const [credentials, setCredentials] = useState({
+const Signup = ({ showAlert }: ShowAlertProps) => {
+  const { dispatch } = useAuth();
+  const { theme } = useTheme();
+  const color = theme.mode === "white" ? "black" : "white";
+  const [credentials, setCredentials] = useState<{
+    name: string;
+    email: string;
+    password: string;
+    cpassword: string;
+  }>({
     name: "",
     email: "",
     password: "",
@@ -13,25 +24,25 @@ const Signup = (props) => {
   });
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const { name, email, password } = credentials;
 
     const response = await axios.post(
-      `${process.env.REACT_APP_BASE_URL}/api/auth/createUser`, { name, email, password }, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+      `${process.env.REACT_APP_BASE_URL}/auth/createUser`,
+      { name, email, password }
+    );
 
     if (response.data.success) {
-      localStorage.setItem("token", response.data.token);
-
+      dispatch({
+        type: AUTH_REDUCER_ACTION_TYPE.LOGIN,
+        payload: response.data.token,
+      });
       navigate("/");
       showAlert("Account created Successfully", "success");
     } else {
@@ -39,10 +50,10 @@ const Signup = (props) => {
     }
   };
   return (
-    <div className="container my-1">
+    <div className={`container my-1 text-${color}`}>
       <h2>Register to Use CloudBook</h2>
       <hr />
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSignUp}>
         <div className="mb-3">
           <label htmlFor="exampleInputPassword1" className="form-label">
             Name

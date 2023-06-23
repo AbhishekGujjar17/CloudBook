@@ -2,38 +2,50 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../context/authContext";
+import { AUTH_REDUCER_ACTION_TYPE } from "../types/enum";
+import { ShowAlertProps } from "../types/types";
+import { useTheme } from "../context/themeContext";
 
-const Login = (props) => {
-  const { showAlert } = props;
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
+const Login = ({ showAlert }: ShowAlertProps) => {
+  const { dispatch } = useAuth();
+  const { theme } = useTheme();
+  const color = theme.mode === "white" ? "black" : "white";
+  const [credentials, setCredentials] = useState<{
+    email: string;
+    password: string;
+  }>({ email: "", password: "" });
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    try {
+      const { email, password } = credentials;
+      const response = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/auth/login`,
+        { email, password }
+      );
 
-    const { email, password } = credentials;
-
-    const response = await axios.post(
-      `${process.env.REACT_APP_BASE_URL}/api/auth/login`, { email, password }, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (response.data.success) {
-      localStorage.setItem("token", response.data.token);
-      showAlert("Logged in Successfully", "success");
-      navigate("/");
-    } else {
+      if (response.data.success) {
+        showAlert("Logged in Successfully", "success");
+        dispatch({
+          type: AUTH_REDUCER_ACTION_TYPE.LOGIN,
+          payload: response.data.token,
+        });
+        navigate("/");
+      } else {
+        showAlert("Invalid Credentials", "danger");
+      }
+    } catch (error) {
       showAlert("Invalid Credentials", "danger");
     }
   };
   return (
-    <div className="container mt-1">
+    <div className={`container mt-1 text-${color}`}>
       <h2>Login to Use CloudBook</h2>
       <hr />
       <form onSubmit={handleSubmit}>

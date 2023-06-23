@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "baseUrl": "server",
+    "outDir": "dist",
+    "sourceMap": true,
+    "noImplicitAny": true
+  },
+  "include": ["**/*"]
+}

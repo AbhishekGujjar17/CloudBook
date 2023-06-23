@@ -1,0 +1,15 @@
+export const enum AUTH_REDUCER_ACTION_TYPE {
+  LOGIN = 0,
+  LOGOUT,
+}
+
+export const enum NOTES_REDUCER_ACTION_TYPE {
+  FETCH_NOTES,
+  ADD_NOTE,
+  DELETE_NOTE,
+  UPDATE_NOTE,
+}
+
+export const enum THEME_REDUCER_ACTION_TYPE {
+  TOGGLE_THEME,
+}

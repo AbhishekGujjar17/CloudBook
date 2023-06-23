@@ -1,57 +1,53 @@
-const express = require("express");
-const Notes = require("./../models/notesModel");
-const router = express.Router();
-const { body, validationResult } = require("express-validator");
-const protectUser = require("./../middleware/protectUser");
-const { findById } = require("./../models/notesModel");
+import { AuthenticatedRequest, NoteBody } from "../types/types";
+import Notes from "./../models/notesModel";
+import { validationResult } from "express-validator";
+import { Response } from "express";
 
-router.get("/fetchallnotes", protectUser, async (req, res) => {
+export const fetchAllNotesController = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
     const notes = await Notes.find({ user: req.user.id });
     res.status(200).send(notes);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }
-});
+};
 
-router.post(
-  "/addnote",
-  protectUser,
-  [
-    body("title", "Title must have at least 3 characters").isLength({ min: 3 }),
-    body("description", "Description must be at least 5 characters").isLength({
-      min: 5,
-    }),
-  ],
+export const addNoteController = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  const errors = validationResult(req);
 
-  async (req, res) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { title, description, tag } = req.body;
-
-    try {
-      const newNote = await Notes.create({
-        user: req.user.id,
-        title,
-        description,
-        tag,
-      });
-      res.status(201).json(newNote);
-    } catch (error) {
-      res.status(500).json({ message: "Something went wrong" });
-    }
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
-);
 
-router.patch("/updatenote/:id", protectUser, async (req, res) => {
   const { title, description, tag } = req.body;
 
   try {
-    const newNote = {};
+    const newNote = await Notes.create({
+      user: req.user.id,
+      title,
+      description,
+      tag,
+    });
+    res.status(201).json(newNote);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+export const updateNoteController = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  const { title, description, tag } = req.body;
+
+  try {
+    const newNote: NoteBody = { title: "", description: "", tag: "" };
     if (title) {
       newNote.title = title;
     }
@@ -81,9 +77,12 @@ router.patch("/updatenote/:id", protectUser, async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }
-});
+};
 
-router.delete("/deletenote/:id", protectUser, async (req, res) => {
+export const deleteNoteController = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
     const note = await Notes.findById(req.params.id);
 
@@ -103,6 +102,4 @@ router.delete("/deletenote/:id", protectUser, async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }
-});
-
-module.exports = router;
+};
