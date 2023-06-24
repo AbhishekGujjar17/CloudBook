@@ -25,7 +25,6 @@ const Login = ({ showAlert }: ShowAlertProps) => {
     e.preventDefault();
     try {
       const { email, password } = credentials;
-      console.log(import.meta.env.VITE_BASE_URL);
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/auth/login`,
         { email, password }
