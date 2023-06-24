@@ -1,20 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import About from "./components/About";
 import Home from "./components/Home";
-import Login from "./components/login";
 import Navbar from "./components/Navbar";
-import Signup from "./components/signup";
 import { useState } from "react";
 import Alert from "./components/Alert";
 import Preview from "./components/Preview";
 import { NoteProvider } from "./context/noteContext";
 import { AuthProvider } from "./context/authContext";
 import { AlertType } from "./types/types";
-// import { useTheme } from "./context/themeContext";
 import "./index.css";
+import Login from "./components/login";
+import Signup from "./components/signup";
 
 export const App = () => {
-  // const { theme } = useTheme();
   const [alert, setAlert] = useState<AlertType>({
     msg: "",
     type: "",
@@ -34,7 +32,7 @@ export const App = () => {
       <AuthProvider>
         <NoteProvider>
           <Router>
-            <Navbar />
+            <Navbar showAlert={showAlert} />
             <Alert alert={alert} />
             <Routes>
               <Route path="/" element={<Home showAlert={showAlert} />} />

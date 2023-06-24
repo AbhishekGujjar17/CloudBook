@@ -9,8 +9,9 @@ import { useTheme } from "../context/themeContext";
 import { GrSun } from "react-icons/gr";
 import { BsMoonFill } from "react-icons/bs";
 import { useEffect } from "react";
+import { ShowAlertProps } from "../types/types";
 
-const Navbar = () => {
+const Navbar = ({ showAlert }: ShowAlertProps) => {
   const { theme, dispatchTheme } = useTheme();
   const { auth, dispatch } = useAuth();
   const location = useLocation();
@@ -27,10 +28,15 @@ const Navbar = () => {
   };
 
   const handleClick = () => {
-    dispatch({
-      type: AUTH_REDUCER_ACTION_TYPE.LOGOUT,
-    });
-    navigate("/login");
+    try {
+      dispatch({
+        type: AUTH_REDUCER_ACTION_TYPE.LOGOUT,
+      });
+      showAlert("Logout Successfully", "success");
+      navigate("/login");
+    } catch (error) {
+      showAlert("Something went wrong", "danger");
+    }
   };
   return (
     <nav className={`navbar navbar-expand-lg navbar-dark bg-dark`}>

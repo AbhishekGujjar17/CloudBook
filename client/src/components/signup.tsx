@@ -30,22 +30,25 @@ const Signup = ({ showAlert }: ShowAlertProps) => {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    try {
+      const { name, email, password } = credentials;
 
-    const { name, email, password } = credentials;
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/auth/createUser`,
+        { name, email, password }
+      );
 
-    const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/auth/createUser`,
-      { name, email, password }
-    );
-
-    if (response.data.success) {
-      dispatch({
-        type: AUTH_REDUCER_ACTION_TYPE.LOGIN,
-        payload: response.data.token,
-      });
-      navigate("/");
-      showAlert("Account created Successfully", "success");
-    } else {
+      if (response.data.success) {
+        dispatch({
+          type: AUTH_REDUCER_ACTION_TYPE.LOGIN,
+          payload: response.data.token,
+        });
+        navigate("/");
+        showAlert("Account created Successfully", "success");
+      } else {
+        showAlert("Invalid Details", "danger");
+      }
+    } catch (error) {
       showAlert("Invalid Details", "danger");
     }
   };

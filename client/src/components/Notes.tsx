@@ -75,6 +75,7 @@ const Notes = ({ showAlert }: ShowAlertProps) => {
         type: NOTES_REDUCER_ACTION_TYPE.UPDATE_NOTE,
         payload: { _id, title, description, tag },
       });
+      showAlert("Note Updated Successfully", "success");
     } catch (error) {
       showAlert("Failed to update note", "danger");
       console.error(error);
